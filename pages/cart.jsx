@@ -24,8 +24,11 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   const createOrder = async (data) => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const serverUrl = isProduction ? process.env.NEXT_PUBLIC_SERVER_URL : 'http://localhost:3000';
+  
     try {
-      const res = await axios.post("http://localhost:3000/api/orders", data);
+      const res = await axios.post(`${serverUrl}/api/orders`, data);
       if (res.status === 201) {
         router.push(`/orders/${res.data._id}`);
         dispatch(reset());

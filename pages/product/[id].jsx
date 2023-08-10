@@ -5,6 +5,11 @@ import { addProduct } from "../../redux/cartSlice";
 import Image from "next/image";
 import axios from "axios";
 
+const isProduction = process.env.NODE_ENV === "production";
+const serverUrl = isProduction
+  ? process.env.NEXT_PUBLIC_SERVER_URL
+  : "http://localhost:3000";
+
 const Product = ({ pizza }) => {
   const [size, setSize] = useState(0);
   const [price, setPrice] = useState(pizza.prices[0]);
@@ -135,7 +140,7 @@ const Product = ({ pizza }) => {
 
 export async function getServerSideProps({ params }) {
   const product = await axios.get(
-    `http://localhost:3000/api/products/${params.id}`
+    `${serverUrl}/api/products/${params.id}`
   );
   return {
     props: {

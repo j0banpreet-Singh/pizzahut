@@ -3,6 +3,11 @@ import styles from "../../styles/Admin.module.css";
 import axios from "axios";
 import Image from "next/image";
 
+const isProduction = process.env.NODE_ENV === "production";
+const serverUrl = isProduction
+  ? process.env.NEXT_PUBLIC_SERVER_URL
+  : "http://localhost:3000";
+
 const index = ({ products, orders }) => {
   const [productList, setProductList] = useState(products);
   const [orderList, setOrderList] = useState(orders);
@@ -12,7 +17,7 @@ const index = ({ products, orders }) => {
   const handleDelete = async (id) => {
     try {
       const del = await axios.delete(
-        `http://localhost:3000/api/products/${id}`
+        `${serverUrl}/api/products/${id}`
       );
       setProductList(productList.filter((item) => item._id != id));
       setCount(count + 1);
@@ -23,11 +28,11 @@ const index = ({ products, orders }) => {
 
   const handleStatus = async (id) => {
     console.log(id);
-    const req = await axios.get(`http://localhost:3000/api/orders/${id}`);
+    const req = await axios.get(`${serverUrl}/api/orders/${id}`);
     const currentStatus = req.data.status;
     try {
       const orderUpdate = await axios.put(
-        `http://localhost:3000/api/orders/${id}`,
+        `${serverUrl}/api/orders/${id}`,
         { status: currentStatus + 1 }
       );
       setOrderList([
@@ -140,8 +145,8 @@ export const getServerSideProps = async (context) => {
       },
     };
   }
-  const req = await axios.get("http://localhost:3000/api/products");
-  const orderReq = await axios.get("http://localhost:3000/api/orders");
+  const req = await axios.get(`${serverUrl}/api/products`);
+  const orderReq = await axios.get(`${serverUrl}/api/orders`);
   const data = req.data;
   return {
     props: {

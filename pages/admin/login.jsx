@@ -5,6 +5,11 @@ import styles from "../../styles/Login.module.css";
 import Link from "next/link";
 
 const Login = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+  const serverUrl = isProduction
+    ? process.env.NEXT_PUBLIC_SERVER_URL
+    : "http://localhost:3000";
+
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [error, setError] = useState(false);
@@ -12,7 +17,7 @@ const Login = () => {
 
   const handleClick = async () => {
     try {
-      await axios.post("http://localhost:3000/api/login", {
+      await axios.post(`${serverUrl}/api/login`, {
         username,
         password,
       });

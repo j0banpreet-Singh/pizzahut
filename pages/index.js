@@ -8,8 +8,12 @@ import AddButton from "../components/AddButton";
 import { useState } from "react";
 import Add from "../components/Add";
 
+const isProduction = process.env.NODE_ENV === "production";
+const serverUrl = isProduction
+  ? process.env.NEXT_PUBLIC_SERVER_URL
+  : "http://localhost:3000";
+
 export default function Home({ pizzaList, admin }) {
-  
   const [close, setClose] = useState(true);
   return (
     <div className={styles.container}>
@@ -19,7 +23,7 @@ export default function Home({ pizzaList, admin }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Featured />
-      {admin && <AddButton setClose={setClose}/>}
+      {admin && <AddButton setClose={setClose} />}
       <PizzaList pizzaList={pizzaList} />
       {!close && <Add setClose={setClose} />}
     </div>
@@ -30,12 +34,12 @@ export async function getServerSideProps(context) {
   const mycookie = context.req?.cookies || "";
   let admin = false;
 
-  console.log(mycookie)
+  console.log(mycookie);
   if (mycookie.token === process.env.TOKEN) {
     admin = true;
   }
 
-  const data = await axios.get("http://localhost:3000/api/products");
+  const data = await axios.get(`${serverUrl}/api/products`);
 
   return {
     props: {

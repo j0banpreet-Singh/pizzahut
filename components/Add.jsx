@@ -10,6 +10,9 @@ const Add = ({ setClose }) => {
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
 
+  const isProduction = process.env.NODE_ENV === 'production';
+  const serverUrl = isProduction ? process.env.NEXT_PUBLIC_SERVER_URL : 'http://localhost:3000';
+
   const handlePrices = (e, index) => {
     const currentPrices = prices;
     currentPrices[index] = e.target.value;
@@ -43,7 +46,7 @@ const Add = ({ setClose }) => {
         img:url,
       };
 
-      const res = await axios.post("http://localhost:3000/api/products",newProduct)
+      const res = await axios.post(`${serverUrl}/api/products`,newProduct)
       console.log(res.data)
       setClose(true)
     } catch (err) {
